@@ -1,0 +1,161 @@
+---
+openapi: 3.0.0
+info:
+  title: Hacker News API
+  description: Official HN API
+  version: "0"
+externalDocs:
+  description: Find out more about the Hacker News API
+  url: https://github.com/HackerNews/API
+servers:
+- url: https://hacker-news.firebaseio.com/v0
+  description: Official HN Server
+- url: https://virtserver.swaggerhub.com/tngranados5/HackerNews/0
+  description: SwaggerHub API Auto Mocking
+paths:
+  /item/{itemId}.json:
+    get:
+      tags:
+      - item
+      summary: Get item by ID
+      description: Returns an item
+      operationId: getItemById
+      parameters:
+      - name: itemId
+        in: path
+        description: ID of item to return
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: succesful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+  /user/{username}.json:
+    get:
+      tags:
+      - user
+      summary: Get user by username
+      description: Returns a user
+      operationId: getUserByUsername
+      parameters:
+      - name: username
+        in: path
+        description: Username of user to return
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: succesful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+components:
+  schemas:
+    Item:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The item's unique id.
+          format: int64
+        deleted:
+          type: boolean
+          description: true if the item is deleted.
+        type:
+          type: string
+          description: The type of item. One of "job", "story", "comment", "poll", or "pollopt".
+          enum:
+          - job
+          - story
+          - comment
+          - poll
+          - pollopt
+        by:
+          type: string
+          description: The username of the item's author.
+        time:
+          type: integer
+          description: Creation date of the item, in Unix Time.
+          format: unix-timestamp
+        text:
+          type: string
+          description: The comment, story or poll text. HTML.
+          format: html
+        dead:
+          type: boolean
+          description: true if the item is dead.
+        parent:
+          type: integer
+          description: The comment's parent, either another comment or the relevant story.
+          format: int64
+        poll:
+          type: integer
+          description: The pollopt's associated poll.
+          format: int64
+        kids:
+          type: array
+          description: The ids of the item's comments, in ranked display order.
+          items:
+            type: integer
+            format: int64
+        url:
+          type: string
+          description: The URL of the story.
+          format: uri
+        score:
+          type: integer
+          description: The story's score, or the votes for a pollopt.
+          format: int64
+        title:
+          type: string
+          description: The title of the story, poll or job. HTML.
+          format: html
+        parts:
+          type: array
+          description: A list of related pollopts, in display order.
+          items:
+            type: integer
+            format: int64
+        descendants:
+          type: array
+          description: In the case of stories or polls, the total comment count.
+          items:
+            type: integer
+            format: int64
+      description: Stories, comments, jobs, Ask HNs and even polls are just items. They're identified by their ids, which are unique integers, and live under `/v0/item/<id>`.
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The user's unique username. Case-sensitive. Required.
+        created:
+          type: integer
+          description: Creation date of the user, in Unix Time.
+          format: unix-timestamp
+        karma:
+          type: integer
+          description: The user's karma.
+          format: int64
+        about:
+          type: string
+          description: The user's optional self-description. HTML.
+          format: html
+        submitted:
+          type: array
+          description: List of the user's stories, polls and comments.
+          items:
+            type: integer
+            format: int64
+      description: Users are identified by case-sensitive ids, and live under `/v0/user/`. Only users that have public activity (comments or story submissions) on the site are available through the API.
