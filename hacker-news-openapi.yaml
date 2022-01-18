@@ -16,7 +16,7 @@ paths:
   /item/{itemId}.json:
     get:
       tags:
-      - item
+      - Item
       summary: Get item by ID
       description: Returns an item
       operationId: getItemById
@@ -40,7 +40,7 @@ paths:
   /user/{username}.json:
     get:
       tags:
-      - user
+      - User
       summary: Get user by username
       description: Returns a user
       operationId: getUserByUsername
@@ -60,6 +60,129 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
+  /maxitem.json:
+    get:
+      tags:
+      - Live data
+      summary: The current largest item id is at /v0/maxitem. You can walk backward from here to discover all items
+      operationId: getMaxItem
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int64
+  /topstories.json:
+    get:
+      tags:
+      - Live data
+      summary: Up to 500 top stories (also contains jobs)
+      operationId: getTopStories
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: integer
+                  format: int64
+  /newstories.json:
+    get:
+      tags:
+      - Live data
+      summary: Up to 500 new stories (also contains jobs).
+      operationId: getNewStories
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: integer
+                  format: int64
+  /beststories.json:
+    get:
+      tags:
+      - Live data
+      summary: The list of the current best stories
+      operationId: getBestStories
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: integer
+                  format: int64
+  /askstories.json:
+    get:
+      tags:
+      - Live data
+      summary: Up to 200 of the latest Ask HN stories
+      operationId: getAskHNStories
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: integer
+                  format: int64
+  /showstories.json:
+    get:
+      tags:
+      - Live data
+      summary: Up to 200 of the latest Show HN stories
+      operationId: getShowHNStories
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: integer
+                  format: int64
+  /jobstories.json:
+    get:
+      tags:
+      - Live data
+      summary: Up to 200 of the latest Job stories
+      operationId: getJobStories
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: integer
+                  format: int64
+  /updates.json:
+    get:
+      tags:
+      - Live data
+      summary: The item and profile changes
+      operationId: getUpdates
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
 components:
   schemas:
     Item:
@@ -159,3 +282,15 @@ components:
             type: integer
             format: int64
       description: Users are identified by case-sensitive ids, and live under `/v0/user/`. Only users that have public activity (comments or story submissions) on the site are available through the API.
+    inline_response_200:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            type: integer
+            format: int64
+        profiles:
+          type: array
+          items:
+            type: string
